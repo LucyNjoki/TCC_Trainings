@@ -1,0 +1,663 @@
+---
+title: "TCC Statistics with R-A Beginner's Perspective"
+author: "Njoki Njuki Lucy"
+date: "9/24/2021"
+output: html_document
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+## Getting Started with R
+
+### What is R?
+
+- R is an open source software used for statistical computing and graphics.
+- Developed at Bell Laboratories (formerly AT&T, now Lucent Technologies) by John Chambers and colleagues.
+- [To download R](https://cran.r-project.org/mirrors.html), please, let's choose a [CRAN mirror](https://cran.r-project.org/mirrors.html) near to us.
+  - In our case, Johannesburg is the closest mirror, hence the download speed is fast unlike choosing from other mirrors.
+
+### What is RStudio?
+
+- RStudio is an IDE.
+- RStudio has four panes where you can view your results, write scripts, view your plots, history, tutorials etc.
+- [Download the free version here](https://www.rstudio.com/products/rstudio/download/#download).
+- Creating a project
+- Setting working directory
+  - `setwd()` 
+  - To see where your working directory is use `getwd()`.
+  
+### Installing and loading package
+
+- Use the syntax `install.packages("PACKAGE_NAME")`
+
+- To load a package: `library(PACKAGE_NAME)`
+
+## How to work with R
+
+### Observations and variables
+
+- Observations as mentioned are the individual subject/ object of a population.
+  - In rows
+- Variables-> a characteristic of a population.
+  - In columns.
+  
+### Entering and storing variables in R
+
+- Variables should be named with names that makes sense.
+e.g. a sex of the respondent -> sex_of_respondent or sex_respondent
+- This goes for the objects such as a data frame
+- Use the assignment symbol  (->) to assign objects in R
+  - Short cut: alt+underscore(_)
+
+### Using Reproducible research practices
+
+- We use comments-> to organize and explain code
+- Use # before the comment to tell R not run it rather just a comment
+
+```{r}
+#number of counties in Ke
+counties_count <- 47
+```
+
+
+- To introduce your script, include a prolog.
+- A prolog can have the following features:
+  - Project name
+  - Project purpose
+  - Name(s) of data set(s) used in the project
+  - Location(s) of data set(s) used in the project
+  - Code author name (you!)
+  - Date code created
+  - Date last time code was edited
+  
+```{r}
+# PROLOG
+################################################################
+# PROJECT: NAME OF PROJECT HERE #
+# PURPOSE: MAJOR POINT(S) OF WHAT I AM DOING WITH THE DATA HERE #
+# DIR: list directory(-ies) for files here #
+# DATA: list data set file names/availability here, e.g., #
+# filename.correctextension #
+#  somewebaddress.com #
+# AUTHOR: AUTHOR NAME(S) #
+# CREATED: MONTH dd, YEAR #
+# LATEST: MONTH dd, YEAR
+################################################
+# NOTES: indent all additional lines under each heading, #
+# & use the hashmark bookends that appear 
+# KEEP PURPOSE, AUTHOR, CREATED & LATEST ENTRIES IN UPPER CASE, #
+# with appropriate case for DIR & DATA, lower case for notes #
+# If multiple lines become too much, #
+# simplify and write code book and readme. #
+# HINT #1: Decide what a long prolog is. #
+# HINT #2: copy & paste this into new script & replace text. #
+# PROLOG 
+######################################################
+
+```
+  
+- An informal prolog include:
+
+```{r}
+####################################
+# Project name
+# Project purpose
+# Code author name
+# Date last edited
+# Location of data used
+####################################
+```
+
+
+### Naming objects
+
+- Here are suggested rules:
+  - Use names that are easy to understand.
+  - Don't use letters and words that are already used by R.
+    - It will cause some confusion if the are used as object names.
+        - E.g. the uppercase letters T and F are used in the code as shorthand for TRUE and FALSE, so they are not useful as object names.
+  - If possible, use words and abbreviations that are not common mathematical terms.
+  
+#### Naming Constants
+
+- The recommended format is  for constants is starting with a “k” and then using camel case.
+  - Camel case is capitalizing the firstletter of each word in the object name, with the exception of the first word.
+  
+```{r}
+# make a new object with well-formatted name
+kcountiesCount <- 47
+
+#OR
+# assign the existing states object a new name
+kcountiesCount <- counties_count
+```
+
+- To remove objects no longer of interest for your analysis, use `rm()` and check which objects exist in your environment, use `ls()`.
+
+```{r}
+rm(counties_count)
+```
+
+#### Naming variables
+
+- Variables are named using the dotcase or camel case.
+  - Dot case puts a dot(or underscore) between words
+    - E.g. blood.pressure
+  - Camel case capitalizes each word in a variable name except the first word.
+    - E.g. bloodPressure
+- Use nouns for variable names like age, income, or religion
+
+### Understanding and changing data types
+
+- To check the data type of an object in R, use the function `class()`.
+
+#### Numeric
+
+- The numeric data type is the default that R assigns to
+constants and variables that contain only numbers. 
+  - can hold whole numbers and numbers with decimal places, so it is the most appropriate data type for variables measured along a continuum, or
+continuous variables. 
+  - For example, both height and temperature can be measured along a continuum and would usually be a numeric data type in R.
+
+```{r}
+# identify the data type for kcountiesCount
+class(kcountiesCount)
+```
+
+#### Integer
+
+- Same as numeric but contains only **whole numbers**.
+- To change the variable type to integer, use the R
+function `as.integer()`.
+- Put `L` after a numeric value, R will read as an integer.
+
+```{r}
+# assign the value of 4 to a constant called kTestInteger
+# make sure it is an integer
+kTestInteger <- as.integer(x = 4)
+# use class() to determine the data type of kTestInteger
+class(x = kTestInteger)
+
+#Or put L after the numeric value 4
+kTestInteger1 <- 4L
+class(kTestInteger1)
+```
+
+#### Logical
+
+- Contains the values of TRUE and FALSE. 
+  - The values of TRUE and FALSE can be assigned to a logical constant, like this:
+
+```{r}
+# create the constant
+(kTestLogical <- TRUE)
+
+#check the constant data type
+class(kTestLogical)
+```
+
+- Logical constants can also be created as the result of some expression, such as the following: 
+
+```{r}
+# store the result of 6 > 8 in a constant called kSixEight
+kSixEight <- 6 > 8
+
+#assess the constant
+class(kSixEight)
+```
+
+#### Character
+
+- Contains letters, words, or numbers that cannot logically be included in calculations (e.g., a zip code).
+- Use either single or double quotation marks to enclose characters (e.g., 'hello' or "world").
+
+```{r}
+# make constants
+(kFirstName <- "Njoki")
+
+# check the data type
+class(x = kFirstName)
+
+```
+
+
+#### Factor
+
+- The factor data type is used for constants and variables that are made up of data elements that fall into categories.
+- Variables measured in categories are categorical.
+- Examples of categorical variables can include variables like religion,marital status, age group, and so on.
+
+#### Dates
+
+- Dates are represented as the number of days since 1970-01-01, with negative values for earlier dates.
+  - `Sys.Date()` returns today's date.
+  - `date()` returns the current date and time.
+
+```{r}
+(today <- Sys.Date())
+```
+
+### Entering data into R
+
+#### Creating a data.frame
+
+- A data.frame can be created from individuals vectors using the `data.frame()`.
+
+```{r}
+(data_example <- data.frame(a=c(1,2), b=c(3,4)))
+
+class(data_example)
+```
+
+#### Importing a data.frame
+
+- To know what format a data file is saved in, examine the file extension.
+
+Common file extensions for data files are as follows:
+
+  - **.csv**: comma separated values
+  - **.txt**: text file
+  - **.xls** or **.xlsx**: Excel file
+  - **.sav**: SPSS file
+  - **.sasb7dat**: SAS file
+  - **.xpt**: SAS transfer file
+  - **.dta**: Stata file
+  
+- To import a .csv file:
+  - base R package -> `read.csv()`
+  - readr (core feature of the tidyverse package) -> `read_csv()`
+  
+```{r}
+# read in penguins dataset using read.csv
+(penguins_df <- read.csv("./data/penguins.csv"))
+```
+
+```{r}
+#load tidyverse package
+library(tidyverse)
+```
+
+```{r}
+# read in penguins dataset using read_csv
+(penguins_tbl <- read_csv("./data/penguins.csv"))
+```
+
+
+#### Creating tibbles
+
+- Tibbles are tidyverse's data frames.
+- To create tibbles, we can do the following:
+  - Coerce a data frame to tibble -> `as_tibble()`.
+  - Create a new tibble from individual vectors with `tibble()`.
+  
+```{r}
+#Illustrations
+
+#coerce a df to a tbl
+(iris_tbl <- as_tibble(iris))
+
+#create from individual vectors
+tibble(
+  x = 1:5, 
+  y = 1, 
+  z = x ^ 2 + y
+)
+```
+
+
+#### What’s difference between tibbles and data frames
+
+- Difference between DF and tibble is in subsetting and printing.
+  - Printing:
+    - Tibbles show only the first 10 rows.
+    - All the columns that fit on screen (but this can be adjusted).
+    - In addition to its name, each column reports its type.
+  - Subsetting:
+    - `$` and [[.]] -> extract by name or position
+      - `$` only extracts by name but is a little less typing.
+  - Tibbles, don't convert the data types of columns such as character is not coerced into a factor as DF would do.
+  
+```{r}
+iris_tbl[["Species"]]
+
+iris_tbl$Species
+```
+      
+### Cleaning data types in an imported data file
+
+- As we have seen that, tibbles don't convert the types of data structures.
+- However, we can do the following 
+  - Coerce to a numeric-> `as.numeric()`
+  - Coerce to a character-> `as.character()`
+  - Coerce to a logical-> `as.logical`
+  - Coerce to a factor-> `as.factor()` or `forcats::as_factor()`
+  - Coerce to a integer-> `as.integer()`
+  
+```{r}
+#lets explore the penguins_tbl
+#using str()
+str(penguins_tbl)
+
+#Or, using glimpse function
+glimpse(penguins_tbl)
+
+#Or, from skimr package, skim()
+skimr::skim(penguins_tbl)
+```
+
+   - For example, we see that the variable `species` is a character, let's change to factors as it's categorical variable.
+   
+```{r}
+penguins_tbl$species <- as_factor(penguins_tbl$species)
+class(penguins_tbl$species)
+```
+   
+#### Identify and treating missing values
+
+- Missing values can occur due to measurement error, or depending on the research question.
+  - **This is a broad topic of discussion**
+- In R, missing values are recorded as `NA`.
+- Researchers code missing values in many different ways when     collecting and storing data. Some of the more common ways to
+denote missing values are the following:
+  - blank
+  - 777, -777, 888, -888, 999, -999, or something similar
+  - a single period
+  - `-1`
+  - NULL
+  - Other responses, such as “Don’t know” or “Inapplicable,” may sometimes be treated as missing or as response categories depending on what is most appropriate given the characteristics of the data and the analysis goals.
+  
+- Assessing if data has any missing values:
+
+```{r}
+sapply(penguins_tbl, function(x)(sum(is.na(x))))
+```
+
+##### Recoding missing values to NA
+
+- Let's introduce a new tidyverse feature->`%>%`(from dplyr)
+  - Called a Pipe, read as "and then"
+  - Another function we will study is `mutate()` i.e. mutate an existing column into new column.
+- Finally, we will use the function `ifelse()`.
+  - But, check out `dplyr::na_if()`!
+- Can do list-wise deletion using `na.omit()`.
+  - But, be careful with this as it reduces the sample size.
+
+```{r}
+(tbl <- tibble(a = c(1,2,3),
+               b = c(3,4,".")))
+
+(tbl_cleaned <- tbl %>%
+  mutate(b = ifelse(b == ".", NA, b)))
+```
+
+###	Understanding the help() function and vignette() function
+
+- `help()` and `vignette()` can be used to check more information about a function, package
+- `?PACKAGE_NAME::FUNCTION` or just `?Function`
+- Web resources include:
+  - [RStudio Cheat sheets](https://www.rstudio.com/resources/cheatsheets/)
+  - [RStudio Community](https://community.rstudio.com/)
+  - [Stackoverflow forum](http://stackoverflow.com/questions/tagged/r)
+  - #RStats, #rstats
+  - R for DS slack channel
+- Books:
+  - [R for Data Science](https://r4ds.had.co.nz/index.html)
+  - [R Gallery Book](https://bookdown.org/content/b298e479-b1ab-49fa-b83d-a57c2b034d49/)
+  - [The R Graph Gallery](https://www.r-graph-gallery.com/)
+  - [Data to Viz](https://www.data-to-viz.com/)
+
+## Basic Statistics with R
+
+### Types of data
+
+Recap:
+
+- Most data types can be broadly classified in two categories: 
+  - Continuous data, (AKA numeric data) are any form of data in which data points can be any numbers within a given range.
+    - Common examples of this include measurements such as 
+height, weight, etc. and many mathematical solutions (e.g. integration, slope, etc.). 
+  - Categorical data, (AKA factor data) is any form of data in which data is grouped into multiple categories.
+    - Examples of this include species type, hair color, etc. 
+    - Binary data is a subset of categorical data in which the data can only be one of two groups (e.g. dead or alive, heads or
+tails, etc.). 
+- Being able to distinguish between these types of data is extremely important, because as we will see later, the type of data being used is an important factor in deciding the appropriate way to analyze the data statistically. 
+
+### Exploring data with tables
+
+- The   `table()` command allows for the creation of contingency tables that report the counts of cases (rows) in different categories of another variable or several variable combinations.     - Are extremely useful for determining if your data is in the correct.
+
+```{r}
+table(iris_tbl$Species)
+
+#two way table
+table(penguins_tbl$sex, penguins_tbl$species)
+```
+
+### Exploring data graphically
+
+- Qn; why do we explore the data graphically
+  - Find out whether your data is reasonable 
+  - Detect any large outliers (for example data entry mistakes) 
+  - Assess what the approximate distribution of the data is 
+  - See the main patterns in the data. 
+
+#### The `plot()` command
+
+- `plot(data.name)` opens a new window new window displaying plots of all pair-wise variable combinations
+
+```{r}
+plot(iris_tbl)
+```
+
+#### Histograms
+
+- histogram displays data values on the x-axis against their 
+frequencies on the y-axis allowing you to judge the distribution of the data.
+- base R: `hist()`
+
+```{r}
+hist(iris_tbl$Sepal.Length)
+```
+- Let's use a pretty graphics: `ggplot2` package
+```{r}
+ggplot(iris_tbl) +
+  geom_histogram(aes(Sepal.Length))
+```
+
+#### Boxplots 
+
+- Display continuous data separated into the levels (groups) of a factor (grouping variable)
+
+Note: the bars ("whiskers") are the are the range of the data that is within 1.5 times the inter-quartile distance from the median. Data points outside that range are regarded as outliers and are displayed as circles.
+
+```{r}
+boxplot(Sepal.Length~Species, data=iris_tbl)
+```
+
+### Descriptive Statistics
+
+- Another quick way to explore data is to use the command 
+summary(name.of.data.frame). 
+  - This command gives you a number of descriptive 
+statistics for each continuous variable (range, quartiles, mean, median) 
+  - For categorical variable, only count per factor level is printed out.
+  
+```{r}
+summary(iris_tbl)
+```
+
+- Or use the commands:
+  - mean -> `mean(variable.name)`
+  - median -> `median(variable.name)`
+  - range -> `range(variable.name)`
+  - standard deviation -> `sd(variable.name)`
+  - no. of observations -> `length(variable.name)`
+  - variance -> `var(variable.name)`
+  
+#### Calculating descriptive statistics for groups of data
+
+- use `tapply()` -> `tapply(X=variable.name,INDEX=list(variable.name), FUN=command.name)`
+
+```{r}
+tapply(X=iris_tbl$Sepal.Length, INDEX=list(iris_tbl$Species), FUN=mean)
+```
+
+- Or, use `summarise()` and `group_by()`
+
+```{r}
+(iris_species_sepal.length_summary <- iris_tbl %>%
+  group_by(Species) %>%
+  summarise(averageSepalLength = mean(Sepal.Length)) %>%
+  ungroup())
+```
+
+### Comparing two groups of measurements
+
+#### Identifying the type of test 
+
+##### One-sample test
+
+- Used when a single sample with a specific hypothesized value for the mean is to be considered. 
+  - For example, fixed value comparisons such as whether average human height is 1.77m. 
+
+##### Two independent sample test
+
+- Measurements on two samples from two different populations are compared. 
+  - Examples include comparisons of males and females, comparisons of plant/animals subjected to two different treatments.
+
+##### Paired-sample test
+
+- Paired sample tests are used when two different measurements were taken on the SAME experimental units.
+  - Examples are before and after studies on the effect of medical treatments, or twins.
+  
+#### Work-flow for group comparisons (one or two groups)
+
+![Work-flow for group comparisons (one or two groups)](D:/TCC_Statistics_with_R-A_Beginner's_Perspective/pics for illustrations/work_flow.png)
+
+#### Assessing normality using quantile-quantile-plots 
+
+- The main assumption for t-tests is that the data is normally distributed. 
+- Depending on the type of group comparison you need to assess normality for the following vector(s): 
+  - one sample test: data of the sample 
+  - two independent sample test: data vector of each group separately 
+  - paired-sample test: vector of differences between the two treatments for each experimental unit 
+- We can, therefore, use `hist()` or `qqnorm(); qqline()`
+- Suppose we want to test if the Culmen length differs between the sexes(penguins dataset)
+  - Let's test normality of the outcome variable "culmen length"
+
+```{r}
+hist(penguins_tbl$culmen_length_mm)
+```
+
+```{r}
+qqnorm(penguins_tbl$culmen_length_mm); qqline(penguins_tbl$culmen_length_mm)
+```
+
+### Using t-test with R
+
+- T-test are calculated using the command `t.test()`
+
+#### One-sample t-test 
+
+- An example in which we want to test whether average human height is 1.77m. This is our data:
+
+```{r}
+height <- c(1.43,1.75,1.85,1.74,1.65,1.83,1.91,1.52,1.92,1.83)
+```
+
+
+- Note: the alternative hypothesis is that average human height is significantly different from 1.77m. We declare the model in the following way, to obtain the following output: 
+
+```{r}
+t.test(height, mu = 1.77)
+```
+
+
+- Conclusion: Therefore, we cannot reject the hypothesis that average human height is significantly different from 1.77m. 
+
+#### Two independent sample t-test 
+
+- We use the example of dispersal distance in male and female butterflies. This is your data: 
+
+```{r}
+distance <- c(3,5,5,4,5,3,1,2,2,3)
+sex <- c("male","male","male","male","male","female","female","female","female","female")
+```
+
+
+- Before running the test, it is important to consider your alternative hypothesis, specifically whether you want to run a one-tailed or two-tailed test.
+  - If no alternative hypothesis is specified, the command will assume a two-tailed test. 
+- The two-sample t-test has a second assumption in addition to the **normality of the data**: **equal variance in the two samples**.
+  - If the variances are assumed to be equal, this must be specified using the argument `var.equal = TRUE`, otherwise Welch´s t-test that does not assume equal variances is automatically used when needed. Here we assume equal variances and perform a two-tailed test. 
+    - To test for equality of variance, use the fn `var.test()`.
+      - Ho: Variances are equal; H1: Variances differ
+      
+```{r}
+t.test(distance ~ sex, var.equal = TRUE)
+```
+
+- Conclusion: Thus, male butterflies dispersal is significantly different from female butterflies.
+- We can also specify a one-sided alternative hypothesis by adding the argument `alternative= “less”` or `alternative = “greater”` depending on which tail is to be tested: 
+
+```{r}
+t.test(distance ~ sex, var.equal = TRUE, alternative="greater")
+
+```
+
+
+- Conclusion:  The results of these tests state that female dispersal distance is not significantly greater than male dispersal distance.
+
+#### Paired sample t-test 
+
+- As an example of a paired test, we investigate whether the sleep of students is affected by an exam. 
+  - You ask 6 students how long they sleep the night before an exam and the night after an exam. These are the answers you get:
+  
+```{r}
+sleep.before <- c(4,2,7,4,3,2)
+sleep.after <- c(5,1,3,6,2,1)
+```
+
+- Here you simply run add the argument `paired=TRUE` to the command from the two-sampled test above. 
+
+```{r}
+t.test(sleep.before, sleep.after, paired=TRUE)
+```
+
+- Well, this test is NOT significant, and thus the data does not support an effect of exams on students sleeping time.
+
+### Non-parametric alternatives
+
+- Perhaps, the normality assumption is not satisfied even after transformations, then use nonparametrics tests equivalent to the parametric tests.
+  - These include one-sample, two-sample (also names Mann Whitney-U test) and paired alternatives, all available through the command `wilcox.test()`.
+  
+### Cross-tabulation and the Chi-square test
+
+- Suppose, we wish to test whether the two grouping variables are independent.
+  - One of the most common ways to analyze contingency tables is with the $χ^2$ -test (Chi-square test). 
+    - Example:
+    
+```{r}
+chisq.test(penguins_tbl$species, penguins_tbl$sex)
+```
+
+- Warning; some levels have less than 5 count hence best to use fisher exact test.
+
+```{r}
+fisher.test(penguins_tbl$species, penguins_tbl$sex)
+```
+ 
+### Introduce regression models: linear and logistics regression models
+
+- Linear regression models are used to assess the association between a continuous outcome variables with dependent variables(can be discrete or continuous).
+  - `lm(y~x)`
+  - Must perform model diagnostics to ensure the model assumptions have been satisfied.
+    - Independence
+    - normality of the outcome variable
+    - constant variance
+- Logistic regression models are used when the response variable is a binary variable, again the dependent variables can be of any time.
+  - `glm()`
+    - Specify family: `logit`
+  - Over-dispersion is expected because:
+    - outcome variable is on the [0,1] scale while the dependent variables are on real line scale.
